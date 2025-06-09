@@ -13,10 +13,10 @@
                         <h4> {{ __('project/overview.overview') }}</h4>
                     </div>
                     <div class="card-body">
-                        @include('projects.project-overview', [
-                            'project' => $project,
-                            'activities' => $activities,
-                            'progress' => $progress,
+                        @includeIf('projects.project-overview', [
+                            'project' => $project ?? null,
+                            'activities' => $activities ?? collect(),
+                            'progress' => $progress ?? ['planning' => 0, 'conducting' => 0],
                         ])
                     </div>
                 </div>

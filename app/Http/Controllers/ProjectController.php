@@ -130,11 +130,20 @@ class ProjectController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        // Calculando progresso de Condução
+        $planningProgress = $this->progressCalculator->calculate($idProject);
+        // Calculando progresso de planejamento e condução
         $conductingProgressController = new ConductingProgressController();
         $conductingProgress = $conductingProgressController->calculateProgress($idProject);
 
-        return view('projects.show', compact('project', 'users_relation', 'activities', 'conductingProgress'));
+        return view('projects.show', [
+            'project' => $project,
+            'users_relation' => $users_relation,
+            'activities' => $activities,
+            'progress' => [
+                'planning' => $planningProgress,
+                'conducting' => $conductingProgress,
+            ],
+        ]);
     }
 
 
