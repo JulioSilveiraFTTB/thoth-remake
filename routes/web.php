@@ -46,6 +46,7 @@ use App\Http\Controllers\TranslationController;
 use App\Livewire\Planning\Databases\Databases;
 use App\Http\Controllers\ThemeController;
 
+
 //use App\Http\Controllers\Auth\LoginController;
 //use Illuminate\Support\Facades\Route;
 
@@ -59,14 +60,6 @@ use App\Http\Controllers\ThemeController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-
-Route::middleware('auth')->group(function () {
-    Route::get('/chat/{projeto_id}', [ChatController::class, 'index']);
-    Route::get('/chat/{projeto_id}/messages', [ChatController::class, 'fetchMessages']);
-    Route::post('/chat/{projeto_id}/messages', [ChatController::class, 'sendMessage']);
-});
-
 
 Route::middleware(Localization::class)->get('/', function () {
     return view('welcome');
@@ -136,10 +129,12 @@ Route::delete('/projects/{idProject}/add-member/{idMember}', [ProjectController:
 Route::put('/projects/{idProject}/members/{idMember}/update-level', [ProjectController::class, 'update_member_level'])->name('projects.update_member_level');
 // End of the Projects Routes
 Route::get('/project/{idProject}/accept-invitation', [ProjectController::class, 'acceptInvitation'])->name('projects.accept_invitation');
+
 Route::get('/projects/{project}/export-activities', [ProjectController::class, 'exportActivities'])
     ->name('projects.exportActivities')
     ->middleware('auth');
 Route::get('/project/{idProject}/decline-invitation', [ProjectController::class, 'declineInvitation'])->name('projects.decline_invitation');
+
 
 // Project Routes
 Route::prefix('project/{projectId}')->middleware(['auth', Localization::class])->group(function () {
@@ -262,25 +257,25 @@ Route::prefix('project/{projectId}')->middleware(['auth', Localization::class])-
 });
 
 //SUPER USER ROUTES
-Route::middleware(['auth', 'role:SUPER_USER'])->group(function () {
-Route::get('/database-manager', [DatabaseManagerController::class, 'index'])->name('database-manager')->middleware('auth');
-Route::get('/user-manager', [UserManagerController::class, 'index'])->name('user-manager')->middleware('auth');
-Route::get('/users/{user}/edit', [UserManagerController::class, 'edit'])->name('user.edit');
-Route::post('/users/{user}', [UserManagerController::class, 'update'])->name('user.update');
-Route::get('/user/create', [UserManagerController::class, 'create'])->name('user.create');
-Route::post('/user', [UserManagerController::class, 'store'])->name('user.store');
-Route::get('/user/{user}/deactivate', [UserManagerController::class, 'deactivate'])->name('user.deactivate');
+Route::middleware(['auth', 'role:SUPER_USER', Localization::class])->group(function () {
+    Route::get('/database-manager', [DatabaseManagerController::class, 'index'])->name('database-manager')->middleware('auth');
+    Route::get('/user-manager', [UserManagerController::class, 'index'])->name('user-manager')->middleware('auth');
+    Route::get('/users/{user}/edit', [UserManagerController::class, 'edit'])->name('user.edit');
+    Route::post('/users/{user}', [UserManagerController::class, 'update'])->name('user.update');
+    Route::get('/user/create', [UserManagerController::class, 'create'])->name('user.create');
+    Route::post('/user', [UserManagerController::class, 'store'])->name('user.store');
+    Route::get('/user/{user}/deactivate', [UserManagerController::class, 'deactivate'])->name('user.deactivate');
 });
 
-Route::get('levels', [LevelController::class, 'index'])->name('levels.index')->middleware('auth');
-Route::get('levels/create', [LevelController::class, 'create'])->name('levels.create')->middleware('auth');
-Route::post('levels', [LevelController::class, 'store'])->name('levels.store')->middleware('auth');
-Route::get('levels/{level}', [LevelController::class, 'show'])->name('levels.show')->middleware('auth');
-Route::get('levels/{level}/edit', [LevelController::class, 'edit'])->name('levels.edit')->middleware('auth');
-Route::put('levels/{level}', [LevelController::class, 'update'])->name('levels.update')->middleware('auth');
-Route::post('levels/{level}', [LevelController::class, 'update'])->name('levels.update')->middleware('auth');
-Route::delete('levels/{level}', [LevelController::class, 'destroy'])->name('levels.destroy')->middleware('auth');
-Route::middleware(['auth', 'role:super-user'])->group(function () {
+Route::middleware(['auth', 'role:SUPER_USER', Localization::class])->group(function () {
+    Route::get('levels', [LevelController::class, 'index'])->name('levels.index')->middleware('auth');
+    Route::get('levels/create', [LevelController::class, 'create'])->name('levels.create')->middleware('auth');
+    Route::post('levels', [LevelController::class, 'store'])->name('levels.store')->middleware('auth');
+    Route::get('levels/{level}', [LevelController::class, 'show'])->name('levels.show')->middleware('auth');
+    Route::get('levels/{level}/edit', [LevelController::class, 'edit'])->name('levels.edit')->middleware('auth');
+    Route::put('levels/{level}', [LevelController::class, 'update'])->name('levels.update')->middleware('auth');
+    Route::post('levels/{level}', [LevelController::class, 'update'])->name('levels.update')->middleware('auth');
+    Route::delete('levels/{level}', [LevelController::class, 'destroy'])->name('levels.destroy')->middleware('auth');
     Route::resource('permissions', PermissionController::class);
 });
 
